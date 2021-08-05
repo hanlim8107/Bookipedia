@@ -1,0 +1,23 @@
+/* home card animation */
+.card {
+    transition: 0.3s all
+  }
+  
+  .card:hover {
+    transform: translate(10px, -10px);
+  }
+  
+  /* detail summary animation */
+  .detail-summary{
+    height: 50px;
+    cursor: pointer;
+  }
+  
+  .detail-summary-hidden {
+    height: 50px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  
+  
+  
