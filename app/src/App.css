@@ -1,3 +1,9 @@
+/* nav-link style none */
+.nav-link:hover, .nav-link:visited, .nav-link:link, .nav-active:active {
+  color: white;
+  text-decoration: none;
+}
+
 /* home card animation */
 .card {
     transition: 0.3s all
@@ -7,17 +13,17 @@
     transform: translate(10px, -10px);
   }
   
-  /* detail summary animation */
-  .detail-summary{
-    height: 50px;
-    cursor: pointer;
-  }
-  
-  .detail-summary-hidden {
-    height: 50px;
-    overflow: hidden;
-    cursor: pointer;
-  }
+/* detail summary animation */
+.detail-summary{
+  height: 50px;
+  cursor: pointer;
+}
+
+.detail-summary-hidden {
+  height: 50px;
+  overflow: hidden;
+  cursor: pointer;
+}
   
   
   
