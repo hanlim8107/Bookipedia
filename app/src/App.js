@@ -1,5 +1,5 @@
 // React Component
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Route, Link} from 'react-router-dom'
 // Material-UI Component
 import { makeStyles } from '@material-ui/core/styles'
@@ -17,34 +17,63 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 // CSS
 import './App.css';
+// Axios
+import axios from 'axios'
+// xml2json
+const convert = require('xml-js')
 
-// Material-UI customizing
-const useStyles = makeStyles((theme) => ({
-  nav: {
-    flexGrow: 1,
-  },
-  card: {
-    width: 300,
-    margin: theme.spacing(7)
-  },
-  detail: {
-    margin: theme.spacing(6)
-  }
-}));
 
 function App() {
-  // For summary animation
-  let [summary, summaryState] = useState(true)
+
+  // For data rendering
+  let [data, setData] = useState([])
+  useEffect(() => {
+    axios.get('/api/v1/search/book_adv.xml', {
+      params: {
+        display: 40,
+        start: 1,
+        d_auth: '이외수'
+      },
+      headers: {
+        'X-Naver-Client-Id': 'QjlAszdDPfT3qjGeEtvD',
+        'X-Naver-Client-Secret': 'UhuhXpfzTw'
+      }
+    })
+    .then((res) => {
+      var bookApi = convert.xml2js(res.data, {compact:true, spaces: 4})
+      setData(bookApi.rss.channel.item)
+    })
+    .catch((res) => {
+      console.log(res.data)
+    })
+  }, [])
+  console.log(data);
+  
   // For Material-UI customizing
+  const useStyles = makeStyles((theme) => ({
+    nav: {
+      flexGrow: 1,
+    },
+    card: {
+      width: 300,
+      margin: theme.spacing(7)
+    },
+    detail: {
+      margin: theme.spacing(6)
+    }
+  }));
   const classes = useStyles();
 
+  // For summary animation
+  let [summary, summaryState] = useState(true)
+  
   return (
     <div className="App">
   
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.nav}>
-            <Link to='/' class="nav-link"><FontAwesomeIcon icon={faBook} transform="left-7"/>Bookipedia</Link>
+            <Link to='/' className="nav-link"><FontAwesomeIcon icon={faBook} transform="left-7"/>Bookipedia</Link>
           </Typography>
         </Toolbar>
       </AppBar>
@@ -55,35 +84,41 @@ function App() {
           container 
           spacing={2}
           direction='row'
-        >
-          <Grid item xs={3}>
-            <Link to='/detail' class="nav-link">
-              <Box className="card">
-                <Card className={classes.card}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      alt="Contemplative Reptile"
-                      height="140"
-                      image="./logo.svg"
-                      title="Contemplative Reptile"
-                    />
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        TITLE
-                      </Typography>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        AUTHOR
-                      </Typography>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        출간연도
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Box>
-            </Link>
-          </Grid>
+        >      
+          {
+            data.length !== 0 
+            ? data.map((data) => {
+                return  <Grid item xs={3}>
+                          <Link to='/detail' className="nav-link">
+                            <Box className="card">
+                              <Card className={classes.card}>
+                                <CardActionArea>
+                                    <CardMedia
+                                        component="img"
+                                        alt="Contemplative Reptile"
+                                        height="140"
+                                        image={data.image._text}
+                                        title="Contemplative Reptile"
+                                      />
+                                      <CardContent>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                          {data.title._text}
+                                        </Typography>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                          {data.author._text}
+                                        </Typography>
+                                        <Typography gutterBottom variant="h5" component="h2">
+                                          {data.pubdate._text}
+                                        </Typography>
+                                      </CardContent>
+                                  </CardActionArea>
+                              </Card>
+                            </Box>
+                          </Link>
+                        </Grid>
+            })
+            : null
+          }
         </Grid>
       </Route>
 
