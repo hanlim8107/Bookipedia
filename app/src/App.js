@@ -53,7 +53,9 @@ function App() {
       </AppBar>
 
       {/* home */}
-      <Route path='/' compoenet={Home} exact/>
+      <Route path='/' exact>
+        <Home/>
+      </Route>
 
       {/* Detail */}
       <Route path='/detail' component={Detail} exact/>
@@ -67,8 +69,10 @@ function Home() {
   // For UI Style
   const classes = useStyles();
 
-  // For data rendering
+  // For homepage bookdata rendering
   let [data, setData] = useState([])
+
+  // set home page book data
   useEffect(() => {
     axios.get('/api/v1/search/book_adv.xml', {
       params: {
@@ -95,43 +99,47 @@ function Home() {
       container 
       spacing={2}
       direction='row'
-    >      
+    > 
       {
         data.length !== 0 
         ? data.map((data) => {
-            return  <Grid item xs={3}>
-                      <Link className="nav-link"
-                            to={{
-                              pathname: '/detail',
-                              state: { data: data }
-                            }}
-                      >
-                        <Box className="card">
-                          <Card className={classes.card}>
-                            <CardActionArea>
-                                <CardMedia
-                                    component="img"
-                                    alt="Contemplative Reptile"
-                                    height="140"
-                                    image={data.image._text}
-                                    title="Contemplative Reptile"
-                                  />
-                                  <CardContent>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                      {data.title._text}
-                                    </Typography>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                      {data.author._text}
-                                    </Typography>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                      {data.pubdate._text}
-                                    </Typography>
-                                  </CardContent>
-                              </CardActionArea>
-                          </Card>
-                        </Box>
-                      </Link>
-                    </Grid>
+            
+
+            return (
+              <Grid item xs={3}>
+                <Link className="nav-link"
+                      to={{
+                        pathname: '/detail',
+                        state: { data: data }
+                      }}
+                >
+                  <Box className="card">
+                    <Card className={classes.card}>
+                      <CardActionArea>
+                          <CardMedia
+                              component="img"
+                              alt="Contemplative Reptile"
+                              height="140"
+                              image={data.image._text}
+                              title="Contemplative Reptile"
+                            />
+                            <CardContent>
+                              <Typography gutterBottom variant="h5" component="h2">
+                                {data.title._text}
+                              </Typography>
+                              <Typography gutterBottom variant="h5" component="h2">
+                                {data.author._text}
+                              </Typography>
+                              <Typography gutterBottom variant="h5" component="h2">
+                                {data.pubdate._text}
+                              </Typography>
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>
+                  </Box>
+                </Link>
+              </Grid>
+            )
         })
         : null
       }
@@ -139,12 +147,15 @@ function Home() {
   )
 }
 
-function Detail() {
+function Detail({location}) {
   // For UI Style
   const classes = useStyles();
 
   // For summary animation
   let [summary, summaryState] = useState(true)
+
+  // For detailpage bookdata rendering
+  let detailData = location.state.data
 
   return (
     <Grid container spacing={2} className={classes.detail}>
@@ -153,19 +164,19 @@ function Detail() {
           component="img"
           alt="Contemplative Reptile"
           height="140"
-          image="/logo.svg"
+          image={detailData.image._text}
           title="Contemplative Reptile"
         />
       </Grid>
       <Grid item xs={8}>
         <Typography gutterBottom variant="h5" component="h2">
-          TITLE
+          {detailData.title._text}
         </Typography>
         <Typography gutterBottom variant="h5" component="h2">
-          AUTHOR
+          {detailData.author._text}
         </Typography>
         <Typography gutterBottom variant="h5" component="h2">
-          출간연도
+          {detailData.pubdate._text}
         </Typography>
         <Typography className="detail-summary-hidden" gutterBottom variant="h5" component="h2" onClick={(e) => {
           summaryState(!summary)
@@ -176,10 +187,10 @@ function Detail() {
           }
           
         }}>
-        is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+          {detailData.description._text}
         </Typography>
         <Typography gutterBottom variant="h5" component="h2">
-          판매처
+          {detailData.publisher._text}
         </Typography>
       </Grid>
     </Grid>
