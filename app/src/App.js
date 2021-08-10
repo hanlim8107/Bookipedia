@@ -1,6 +1,6 @@
 // React Component
 import React, {useState, useEffect} from 'react'
-import {Route, Link} from 'react-router-dom'
+import {Route, Link, Switch} from 'react-router-dom'
 // Material-UI Component
 import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar';
@@ -52,15 +52,11 @@ function App() {
         </Toolbar>
       </AppBar>
 
-      {/* home */}
-      <Route path='/' exact>
-        <Home/>
-      </Route>
+      <Switch>
+        <Route exact path='/' component={Home}/>
+        <Route path='/detail/:isbn' component={Detail}/>
+      </Switch>
 
-      {/* Detail */}
-      <Route path='/detail' component={Detail} exact/>
-
-      
     </div>
   );
 }
@@ -107,12 +103,7 @@ function Home() {
 
             return (
               <Grid item xs={3}>
-                <Link className="nav-link"
-                      to={{
-                        pathname: '/detail',
-                        state: { data: data }
-                      }}
-                >
+                <Link className="nav-link" to={`/detail/${data.isbn._text}`}>
                   <Box className="card">
                     <Card className={classes.card}>
                       <CardActionArea>
@@ -147,7 +138,7 @@ function Home() {
   )
 }
 
-function Detail({location}) {
+function Detail({match}) {
   // For UI Style
   const classes = useStyles();
 
@@ -155,45 +146,72 @@ function Detail({location}) {
   let [summary, summaryState] = useState(true)
 
   // For detailpage bookdata rendering
-  let detailData = location.state.data
+
+  let [detailData, setDetailData] = useState([])
+  useEffect(() => {
+    axios.get('/api/v1/search/book_adv.xml', {
+      params: {
+        display: 40,
+        start: 1,
+        d_isbn: match.params.isbn
+      },
+      headers: {
+        'X-Naver-Client-Id': 'QjlAszdDPfT3qjGeEtvD',
+        'X-Naver-Client-Secret': 'UhuhXpfzTw'
+      }
+    })
+    .then((res) => {
+      let bookApi = convert.xml2js(res.data, {compact:true, spaces: 4})
+      setDetailData(bookApi.rss.channel.item)
+    })
+    .catch((res) => {
+      console.log(res.data)
+    })
+  }, [])
 
   return (
-    <Grid container spacing={2} className={classes.detail}>
-      <Grid item xs={4}>
-        <CardMedia
-          component="img"
-          alt="Contemplative Reptile"
-          height="140"
-          image={detailData.image._text}
-          title="Contemplative Reptile"
-        />
-      </Grid>
-      <Grid item xs={8}>
-        <Typography gutterBottom variant="h5" component="h2">
-          {detailData.title._text}
-        </Typography>
-        <Typography gutterBottom variant="h5" component="h2">
-          {detailData.author._text}
-        </Typography>
-        <Typography gutterBottom variant="h5" component="h2">
-          {detailData.pubdate._text}
-        </Typography>
-        <Typography className="detail-summary-hidden" gutterBottom variant="h5" component="h2" onClick={(e) => {
-          summaryState(!summary)
-          if (summary === true) {
-            e.target.classList.replace("detail-summary-hidden", "detail-summary")
-          } else {
-            e.target.classList.replace("detail-summary", "detail-summary-hidden")
-          }
-          
-        }}>
-          {detailData.description._text}
-        </Typography>
-        <Typography gutterBottom variant="h5" component="h2">
-          {detailData.publisher._text}
-        </Typography>
-      </Grid>
-    </Grid>
+      <div>
+      {
+        detailData.length !== 0
+        ? <Grid container spacing={2} className={classes.detail}>
+            <Grid item xs={4}>
+              <CardMedia
+                component="img"
+                alt="Contemplative Reptile"
+                height="140"
+                image={detailData.image._text}
+                title="Contemplative Reptile"
+              />
+            </Grid>
+            <Grid item xs={8}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {detailData.title._text}
+              </Typography>
+              <Typography gutterBottom variant="h5" component="h2">
+                {detailData.author._text}
+              </Typography>
+              <Typography gutterBottom variant="h5" component="h2">
+                {detailData.pubdate._text}
+              </Typography>
+              <Typography className="detail-summary-hidden" gutterBottom variant="h5" component="h2" onClick={(e) => {
+                summaryState(!summary)
+                if (summary === true) {
+                  e.target.classList.replace("detail-summary-hidden", "detail-summary")
+                } else {
+                  e.target.classList.replace("detail-summary", "detail-summary-hidden")
+                }
+                
+              }}>
+                {detailData.description._text}
+              </Typography>
+              <Typography gutterBottom variant="h5" component="h2">
+                {detailData.publisher._text}
+              </Typography>
+            </Grid>
+          </Grid>
+        : null
+      }
+    </div>
   )
 }
 
