@@ -12,9 +12,12 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
 // FontAwesome Component
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook } from "@fortawesome/free-solid-svg-icons";
+import { faBook, faSearch } from "@fortawesome/free-solid-svg-icons";
+// styled components
+import styled from 'styled-components'
 // CSS
 import './App.css';
 // Axios
@@ -24,6 +27,9 @@ const convert = require('xml-js')
 
 // For Material-UI customizing
 const useStyles = makeStyles((theme) => ({
+  root: {
+
+  },
   nav: {
     flexGrow: 1,
   },
@@ -33,9 +39,19 @@ const useStyles = makeStyles((theme) => ({
   },
   detail: {
     margin: theme.spacing(6)
-  }
+  },
 }));
 
+// For Styled Components
+const StyledTextField = styled(TextField)`
+  margin-top: 10px;
+  width: 100%;
+`
+
+const NoResult = styled.p`
+  margin-top: 500px;
+  margin: auto;
+`
 
 function App() {
   // For UI Style
@@ -56,7 +72,6 @@ function App() {
         <Route exact path='/' component={Home}/>
         <Route path='/detail/:isbn' component={Detail}/>
       </Switch>
-
     </div>
   );
 }
@@ -66,15 +81,18 @@ function Home() {
   const classes = useStyles();
 
   // For homepage bookdata rendering
-  let [data, setData] = useState([])
+  let [data, setData] = useState()
+
+  // For input value
+  let [inputValue, setInputValue] = useState()
 
   // set home page book data
   useEffect(() => {
     axios.get('/api/v1/search/book_adv.xml', {
       params: {
-        display: 40,
+        display: 100,
         start: 1,
-        d_auth: '이외수'
+        d_titl: inputValue
       },
       headers: {
         'X-Naver-Client-Id': 'QjlAszdDPfT3qjGeEtvD',
@@ -83,58 +101,69 @@ function Home() {
     })
     .then((res) => {
       var bookApi = convert.xml2js(res.data, {compact:true, spaces: 4})
-      setData(bookApi.rss.channel.item)
+      if (bookApi.rss.channel.item === undefined) {
+        setData(undefined)
+      } else if (Array.isArray(bookApi.rss.channel.item) === false) {
+        setData([bookApi.rss.channel.item])
+      } else {
+        setData(bookApi.rss.channel.item)
+      }
+      
     })
     .catch((res) => {
       console.log(res.data)
     })
-  }, [])
-
+  }, [inputValue])
+  console.log(data)
+    
   return (
-    <Grid 
-      container 
-      spacing={2}
-      direction='row'
-    > 
-      {
-        data.length !== 0 
-        ? data.map((data) => {
-            
-
-            return (
-              <Grid item xs={3}>
-                <Link className="nav-link" to={`/detail/${data.isbn._text}`}>
-                  <Box className="card">
-                    <Card className={classes.card}>
-                      <CardActionArea>
-                          <CardMedia
-                              component="img"
-                              alt="Contemplative Reptile"
-                              height="140"
-                              image={data.image._text}
-                              title="Contemplative Reptile"
-                            />
-                            <CardContent>
-                              <Typography gutterBottom variant="h5" component="h2">
-                                {data.title._text}
-                              </Typography>
-                              <Typography gutterBottom variant="h5" component="h2">
-                                {data.author._text}
-                              </Typography>
-                              <Typography gutterBottom variant="h5" component="h2">
-                                {data.pubdate._text}
-                              </Typography>
-                            </CardContent>
-                        </CardActionArea>
-                    </Card>
-                  </Box>
-                </Link>
-              </Grid>
-            )
-        })
-        : null
-      }
-    </Grid>
+    <div>
+      <StyledTextField id="outlined-basic" label="제목을 입력하세요" variant="outlined" onChange={(e) => {
+          setInputValue(e.target.value)
+      }}/>
+      <Grid 
+        container 
+        spacing={2}
+        direction='row'
+      > 
+        {
+          data !== undefined
+          ? data.map((data) => {
+              return (
+                <Grid item xs={3}>
+                  <Link className="nav-link" to={`/detail/${data.isbn._text}`}>
+                    <Box className="card">
+                      <Card className={classes.card}>
+                        <CardActionArea>
+                              <CardMedia
+                                  component="img"
+                                  alt="Contemplative Reptile"
+                                  height="140"
+                                  image={data.image._text}
+                                  title="Contemplative Reptile"
+                              />
+                              <CardContent>
+                                <Typography gutterBottom variant="h5" component="h2">
+                                  {data.title._text}
+                                </Typography>
+                                <Typography gutterBottom variant="h5" component="h2">
+                                  {data.author._text}
+                                </Typography>
+                                <Typography gutterBottom variant="h5" component="h2">
+                                  {data.pubdate._text}
+                                </Typography>
+                              </CardContent>
+                          </CardActionArea>
+                      </Card>
+                    </Box>
+                  </Link>
+                </Grid>
+              )
+          })
+          : <NoResult>검색결과가 없습니다</NoResult>
+        }
+      </Grid>
+    </div>
   )
 }
 
@@ -146,13 +175,10 @@ function Detail({match}) {
   let [summary, summaryState] = useState(true)
 
   // For detailpage bookdata rendering
-
   let [detailData, setDetailData] = useState([])
   useEffect(() => {
     axios.get('/api/v1/search/book_adv.xml', {
       params: {
-        display: 40,
-        start: 1,
         d_isbn: match.params.isbn
       },
       headers: {

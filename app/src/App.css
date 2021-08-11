@@ -4,14 +4,15 @@
   text-decoration: none;
 }
 
+
 /* home card animation */
 .card {
     transition: 0.3s all
   }
   
-  .card:hover {
-    transform: translate(10px, -10px);
-  }
+.card:hover {
+  transform: translate(10px, -10px);
+}
   
 /* detail summary animation */
 .detail-summary{
