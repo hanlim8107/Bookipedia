@@ -1,19 +1,29 @@
-import { Link } from 'react-router-dom'
+import StyledNoneLink from './reusable/Link'
 // styled components
 import styled from 'styled-components'
 // Material-UI Component
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 
 
 // Styling
+const CardWrap = styled(Grid)`
+    margin-top: 120px !important;
+`
+
 const StyledCard = styled(Card)`
     width: 300px;
-    margin: 40px;
+    margin: 50px auto;
+    box-shadow: 0px 0px 0px black !important;
+`
+
+const CardImage = styled(CardMedia)`
+    width: 300px;
+    height: 300px;
+    object-fit: fill !important;
 `
 
 const NoResult = styled.p`
@@ -21,11 +31,19 @@ const NoResult = styled.p`
     margin: auto;
 `
 
+const StyledTypography = styled(Typography)`
+    padding: 5px 1px;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    overflow: hidden;
+    white-space: nowrap;
+`
 
-export default function HomeView({data}) {
-    
+
+export default function HomeView( { data } ) {
+
     return (
-        <Grid 
+        <CardWrap
             container 
             spacing={2}
             direction='row'
@@ -34,36 +52,28 @@ export default function HomeView({data}) {
             data !== undefined
             ? data.map((data) => {
                 return (
-                    <Grid item xs={3}>
-                        <Link className="nav-link" to={`/detail/${data.isbn._text}`}>
+                    <Grid item xs={12} sm={6} lg={3}>
+                        <StyledNoneLink className="nav-link" to={`/detail/${data.isbn._text}`}>
                             <StyledCard>
                                 <CardActionArea>
-                                    <CardMedia
+                                    <CardImage
                                         component="img"
                                         alt="Contemplative Reptile"
                                         height="140"
                                         image={data.image._text}
                                         title="Contemplative Reptile"
                                     />
-                                    <CardContent>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                        {data.title._text}
-                                        </Typography>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                        {data.author._text}
-                                        </Typography>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                        {data.pubdate._text}
-                                        </Typography>
-                                    </CardContent>
+                                    <StyledTypography gutterBottom variant="h5" component="h2">
+                                        {data.title._text.replace('<b>', '').replace('</b>', '')}
+                                    </StyledTypography>
                                 </CardActionArea>
                             </StyledCard>
-                        </Link>
+                        </StyledNoneLink>
                     </Grid>
                 )
             })
             : <NoResult>검색결과가 없습니다</NoResult>
             }
-        </Grid>
+        </CardWrap>
     )
 }

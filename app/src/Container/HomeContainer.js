@@ -10,13 +10,27 @@ import axios from 'axios'
 // xml2json
 const convert = require('xml-js')
 
+
 // Styling
-const StyledTextField = styled(TextField)`
-    margin-top: 10px;
+const TextFieldWrap = styled.div`
+    position: fixed !important;
+    top: 64px !important;
+    z-index: 2;
     width: 100%;
+    background-color: white;
+
+    @media screen and (max-width: 600px) {
+        top: 56px !important;
+    }
+`
+const StyledTextField = styled(TextField)`
+    margin-top: 6px !important;
+    width: 98%;
 `
 
+
 export default function Home() {
+
     // For homepage bookdata rendering
     let [data, setData] = useState()
 
@@ -45,7 +59,6 @@ export default function Home() {
             } else {
                 setData(bookApi.rss.channel.item)
             }
-        
         })
         .catch((res) => {
             console.log(res)
@@ -54,9 +67,11 @@ export default function Home() {
         
     return (
         <div>
-            <StyledTextField id="outlined-basic" label="제목을 입력하세요" variant="outlined" onChange={(e) => {
-                setInputValue(e.target.value)
-            }}/>
+            <TextFieldWrap>
+                <StyledTextField id="outlined-basic" label="제목을 입력하세요" variant="outlined" onChange={(e) => {
+                    setInputValue(e.target.value)
+                }}/>
+            </TextFieldWrap>
             <HomeView  data={data} />
         </div>
     )
