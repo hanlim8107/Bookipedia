@@ -47,7 +47,7 @@ export default function HomeView( { data } ) {
             container 
             spacing={2}
             direction='row'
-        > 
+        >
             {
             data !== undefined
             ? data.map((data) => {
@@ -64,7 +64,7 @@ export default function HomeView( { data } ) {
                                         title="Contemplative Reptile"
                                     />
                                     <StyledTypography gutterBottom variant="h5" component="h2">
-                                        {data.title._text.replace('<b>', '').replace('</b>', '')}
+                                        {data.title._text.replace('<b>', '').replace('</b>', '').replace(/\((.*)\)/gi, '')}
                                     </StyledTypography>
                                 </CardActionArea>
                             </StyledCard>

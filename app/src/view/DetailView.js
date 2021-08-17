@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useState, useEffect} from 'react'
 // styled components
 import styled from 'styled-components'
 // Material-UI Component
@@ -41,6 +41,14 @@ const TextBox = styled.div`
 
 
 export default function DetailView({detailData}) {
+    let [pubDate, setPubDate] = useState([])
+    useEffect(() => {
+        if (detailData !== undefined) {
+            return setPubDate(detailData.pubdate._text.match(/\d{2}/g))
+        } else {
+            
+        }
+    }, [detailData])
 
     return (
         <div>
@@ -64,10 +72,10 @@ export default function DetailView({detailData}) {
                         </Grid>
                         <Grid item xs={12} sm={3}>
                             <StyledTitle gutterBottom variant="h5" component="h2">
-                            {detailData.title._text}
+                                {detailData.title._text.replace('<b>', '').replace('</b>', '').replace(/\((.*)\)/gi, '')}
                             </StyledTitle>
                             <StyledAuthor gutterBottom variant="h5" component="h2">
-                            {detailData.author._text}
+                                {detailData.author._text}
                             </StyledAuthor>
                         </Grid>
                     </StyledGrid>
@@ -81,7 +89,7 @@ export default function DetailView({detailData}) {
                     </TextBox>
                     <TextBox>
                         <h3>출간일</h3>
-                        <p>{detailData.pubdate._text}</p>
+                        <p>{pubDate[0] + pubDate[1] + '년 ' + pubDate[2] + '월 ' + pubDate[3] + '일'}</p>
                     </TextBox>
                 </div>
 
