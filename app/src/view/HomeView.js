@@ -27,8 +27,9 @@ const CardImage = styled(CardMedia)`
 `
 
 const NoResult = styled.p`
-    margin-top: 500px;
-    margin: auto;
+    position: absolute;
+    top: 300px;
+    left: 44vw;
 `
 
 const StyledTypography = styled(Typography)`

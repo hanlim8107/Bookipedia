@@ -1,11 +1,22 @@
 import { useState, useEffect } from 'react'
+import {selector, useRecoilValue} from 'recoil'
+import {searchValueSetter} from './SearchContainer'
 
 import HomeView from '../view/HomeView.js'
 import HTTPRequest from './function/HTTPRequest.js'
 
 
-export default function Home({inputValue}) {
+// get searchValue from SearchContainer.js using recoil
+const searchValueGetter = selector({
+    key: 'searchValueGetter',
+    get: ({get}) => {
+        return get(searchValueSetter)
+    }
+})
 
+export default function Home() {
+    // For searchValue
+    const searchValue = useRecoilValue(searchValueGetter)
     // For homepage bookdata rendering
     let [data, setData] = useState()
 
@@ -15,16 +26,17 @@ export default function Home({inputValue}) {
             let HTTPData = await HTTPRequest({
                 start: 1,
                 display: 100,
-                d_titl: inputValue
+                d_titl: searchValue
             })
             setData(HTTPData)
         }
         HTTPRequestForSetData()
-    }, [inputValue])
+    }, [searchValue])
         
     return (
         <div>
-            <HomeView  data={data} />
+            <HomeView data={data}/>
+            {console.log()}
         </div>
     )
 }

@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import {atom, useRecoilState} from 'recoil'
 import Home from './HomeContainer'
 // styled components
 import styled from 'styled-components'
@@ -22,20 +23,29 @@ const StyledTextField = styled(TextField)`
     width: 98%;
 `
 
+// set atomState
+const searchValueSetter = atom({
+    key: 'SearchValueSetter',
+    default: ''
+})
 
-export default function SearchInput() {
-
+function SearchInput() {
     // For input value
-    let [inputValue, setInputValue] = useState()
+    let [searchValue, setSearchValue] = useRecoilState(searchValueSetter)
+
+    // For setsearchValue
+    const onChange = (e) => {
+        setTimeout(() => {
+            setSearchValue(e.target.value);
+        }, 1500)
+    }
 
     return (
-        <div>
             <TextFieldWrap>
-                <StyledTextField id="outlined-basic" label="제목을 입력하세요" variant="outlined" onChange={(e) => {
-                    setInputValue(e.target.value)
-                }}/>
+                <StyledTextField id="outlined-basic" label="제목을 입력하세요" variant="outlined" onChange={onChange}/>
             </TextFieldWrap>
-            <Home inputValue={inputValue}/>
-        </div>
     )
 }
+
+
+export {searchValueSetter, SearchInput}

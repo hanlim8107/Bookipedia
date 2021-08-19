@@ -2,7 +2,7 @@
 import React from 'react'
 import {Route, Switch} from 'react-router-dom'
 // import SearchInput Conponent
-import SearchInput from './Container/SearchContainer'
+import {SearchInput} from './Container/SearchContainer'
 // import Home Component
 import Home from './Container/HomeContainer'
 // import Detail Component
@@ -19,8 +19,8 @@ function App() {
 
       <Switch>
         <Route exact path='/'>
-          <SearchInput/>
-          <Home/>
+            <SearchInput/>
+            <Home/>
         </Route>
         <Route path='/detail/:isbn' component={Detail}/>
 
