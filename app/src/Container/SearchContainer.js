@@ -45,6 +45,7 @@ function SearchInput() {
     let titleCondition = 'd_titl'
     let authorCondition = 'd_auth'
     let [selectValue, setSelectValue] = useState('d_titl')
+
     // For set selectValue
     const selectOnChange = (e) => {
         setSelectValue(e.target.value)
@@ -52,11 +53,12 @@ function SearchInput() {
 
     // For Search value
     let [searchValue, setSearchValue] = useRecoilState(searchValueSetter)
+
     // For set searchValue
     const inputOnChange = (e) => {
         setTimeout(() => {
             let searchCondition = {};
-            searchCondition[selectValue] = e.target.value
+            searchCondition[selectValue] = e.target.value;
             setSearchValue(searchCondition);
         }, 1500)
     }

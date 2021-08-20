@@ -20,15 +20,27 @@ export default function Home() {
     // For homepage bookdata rendering
     let [data, setData] = useState()
 
+    // For start state
+    let [start, setStart] = useState(1)
+    // For set start state
+    document.addEventListener('scroll', function() {
+        let scrollEnd = document.documentElement.offsetHeight - document.documentElement.clientHeight
+        if (document.documentElement.scrollTop === scrollEnd) {
+            setStart(start + 30)
+        }
+    })
+
     // set home page book data
     useEffect(() => {
+        setStart(1)
+        setData()
         if (searchValue === "don't request") {
             return null
         } else {
             async function HTTPRequestForSetData() {
                 let HTTPData = await HTTPRequest({
-                    start: 1,
-                    display: 100,
+                    start: start,
+                    display: 30,
                     ...searchValue
                 })
                 setData(HTTPData)
@@ -36,11 +48,30 @@ export default function Home() {
             HTTPRequestForSetData()
         }
     }, [searchValue])
+
+    useEffect(() => {
+        if (searchValue === "don't request") {
+            return null
+        } 
+        else if (start === 1) {
+            return null
+        }
+        else {
+            async function HTTPRequestForSetData() {
+                let HTTPData = await HTTPRequest({
+                    start: start,
+                    display: 30,
+                    ...searchValue
+                })
+                if (HTTPData !== undefined) {
+                    setData([...data, ...HTTPData])
+                }
+            }
+            HTTPRequestForSetData()
+        }
+    }, [start])
         
     return (
-        <div>
             <HomeView data={data}/>
-            {console.log()}
-        </div>
     )
 }
