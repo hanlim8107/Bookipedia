@@ -22,15 +22,19 @@ export default function Home() {
 
     // set home page book data
     useEffect(() => {
-        async function HTTPRequestForSetData() {
-            let HTTPData = await HTTPRequest({
-                start: 1,
-                display: 100,
-                d_titl: searchValue
-            })
-            setData(HTTPData)
+        if (searchValue === "don't request") {
+            return null
+        } else {
+            async function HTTPRequestForSetData() {
+                let HTTPData = await HTTPRequest({
+                    start: 1,
+                    display: 100,
+                    ...searchValue
+                })
+                setData(HTTPData)
+            }
+            HTTPRequestForSetData()
         }
-        HTTPRequestForSetData()
     }, [searchValue])
         
     return (
