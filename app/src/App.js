@@ -4,9 +4,9 @@ import {Route, Switch} from 'react-router-dom'
 // import SearchInput Conponent
 import {SearchInput} from './Container/SearchContainer'
 // import Home Component
-import Home from './Container/HomeContainer'
+import Home from './Container/HomeCardContainer'
 // import Detail Component
-import Detail from './Container/DetailContainer'
+import Detail from './Container/DetailCardContainer'
 // import Nav Component
 import NavView from './view/NavView'
 

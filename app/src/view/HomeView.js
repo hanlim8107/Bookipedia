@@ -59,10 +59,8 @@ export default function HomeView( { data } ) {
                                 <CardActionArea>
                                     <CardImage
                                         component="img"
-                                        alt="Contemplative Reptile"
-                                        height="140"
                                         image={data.image._text}
-                                        title="Contemplative Reptile"
+                                        onError={(e) => {e.target.src='image/no-image.jpeg'}}
                                     />
                                     <StyledTypography gutterBottom variant="h5" component="h2">
                                         {data.title._text.replace('<b>', '').replace('</b>', '').replace(/\((.*)\)/gi, '')}
