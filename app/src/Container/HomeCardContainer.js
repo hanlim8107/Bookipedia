@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import {selector, useRecoilValue} from 'recoil'
 import {searchValueSetter} from './SearchContainer'
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import HomeView from '../view/HomeView.js'
 import HTTPRequest from './function/HTTPRequest.js'
 
 
-// get searchValue from SearchContainer.js using recoil
+// Get global state 'searchValue' declared in 'SearchContainer.js'
 const searchValueGetter = selector({
     key: 'searchValueGetter',
     get: ({get}) => {
@@ -15,28 +16,22 @@ const searchValueGetter = selector({
 })
 
 export default function Home() {
-    // For searchValue
+    // ** Global state
     const searchValue = useRecoilValue(searchValueGetter)
-    // For homepage bookdata rendering
+
+    // ** Local state
     let [data, setData] = useState()
-
-    // For start state
     let [start, setStart] = useState(1)
-    // For set start state
-    document.addEventListener('scroll', function() {
-        let scrollEnd = document.documentElement.offsetHeight - document.documentElement.clientHeight
-        if (document.documentElement.scrollTop === scrollEnd) {
-            setStart(start + 30)
-        }
-    })
 
-    // set home page book data
+    // ** Set State
+    // * Set 'data' when 'searchValue' change
     useEffect(() => {
         setStart(1)
         setData()
         if (searchValue === "don't request") {
             return null
-        } else {
+        } 
+        else {
             async function HTTPRequestForSetData() {
                 let HTTPData = await HTTPRequest({
                     start: start,
@@ -49,6 +44,7 @@ export default function Home() {
         }
     }, [searchValue])
 
+    // * Set 'data' when 'start' change
     useEffect(() => {
         if (searchValue === "don't request") {
             return null
@@ -65,13 +61,27 @@ export default function Home() {
                 })
                 if (HTTPData !== undefined) {
                     setData([...data, ...HTTPData])
+                    console.log(start)
+                    console.log(data)
                 }
             }
             HTTPRequestForSetData()
         }
     }, [start])
-        
+    
+    const increaseStartCount = () => {
+        setStart(start + 30)
+        console.log(start)
+    }
+    
     return (
+        <InfiniteScroll
+            dataLength={data !== undefined ? data.length : null}
+            next={increaseStartCount}
+            hasMore={true}
+            style={{overflow: 'visible'}}
+        >
             <HomeView data={data}/>
+        </InfiniteScroll>
     )
 }

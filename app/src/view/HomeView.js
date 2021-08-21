@@ -42,7 +42,7 @@ const StyledTypography = styled(Typography)`
 
 
 export default function HomeView( { data } ) {
-
+    
     return (
         <CardWrap
             container 
@@ -51,27 +51,29 @@ export default function HomeView( { data } ) {
         >
             {
             data !== undefined
-            ? data.map((data) => {
-                return (
-                    <Grid item xs={12} sm={6} lg={3}>
-                        <StyledNoneLink className="nav-link" to={`/detail/${data.isbn._text}`}>
-                            <StyledCard>
-                                <CardActionArea>
-                                    <CardImage
-                                        component="img"
-                                        image={data.image._text}
-                                        onError={(e) => {e.target.src='image/no-image.jpeg'}}
-                                    />
-                                    <StyledTypography gutterBottom variant="h5" component="h2">
-                                        {data.title._text.replace('<b>', '').replace('</b>', '').replace(/\((.*)\)/gi, '')}
-                                    </StyledTypography>
-                                </CardActionArea>
-                            </StyledCard>
-                        </StyledNoneLink>
-                    </Grid>
-                )
+
+            ?   data.map((data, index) => {
+                    return (
+                        <Grid item xs={12} sm={6} lg={3} key={index}>
+                            <StyledNoneLink className="nav-link" to={`/detail/${data.isbn._text}`}>
+                                <StyledCard>
+                                    <CardActionArea>
+                                        <CardImage
+                                            component="img"
+                                            image={data.image._text}
+                                            onError={(e) => {e.target.src='image/no-image.jpeg'}}
+                                        />
+                                        <StyledTypography gutterBottom variant="h5" component="h2">
+                                            {data.title._text.replace('<b>', '').replace('</b>', '').replace(/\((.*)\)/gi, '')}
+                                        </StyledTypography>
+                                    </CardActionArea>
+                                </StyledCard>
+                            </StyledNoneLink>
+                        </Grid>
+                    )
             })
-            : <NoResult>검색결과가 없습니다</NoResult>
+            
+            :   <NoResult>검색결과가 없습니다</NoResult>
             }
         </CardWrap>
     )
