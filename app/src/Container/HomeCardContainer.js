@@ -61,17 +61,15 @@ export default function Home() {
                 })
                 if (HTTPData !== undefined) {
                     setData([...data, ...HTTPData])
-                    console.log(start)
-                    console.log(data)
                 }
             }
             HTTPRequestForSetData()
         }
     }, [start])
-    
+
+    // * set 'start' state when the scroll reaches the set threshold
     const increaseStartCount = () => {
         setStart(start + 30)
-        console.log(start)
     }
     
     return (

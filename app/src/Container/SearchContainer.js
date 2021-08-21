@@ -33,7 +33,7 @@ const StyledFormControl = styled(FormControl)`
 `
 
 
-// set atomState
+// Set global state 'searchValue' for rendering home card
 const searchValueSetter = atom({
     key: 'SearchValueSetter',
     default: "don't request"
@@ -41,27 +41,30 @@ const searchValueSetter = atom({
 
 
 function SearchInput() {
-    // For Select Value
-    let titleCondition = 'd_titl'
-    let authorCondition = 'd_auth'
+    // ** Global state
+    let [searchValue, setSearchValue] = useRecoilState(searchValueSetter)
+
+    // ** Local state
     let [selectValue, setSelectValue] = useState('d_titl')
 
-    // For set selectValue
+    // ** Set State
+    // *  Set 'selectValue' when select box change
     const selectOnChange = (e) => {
         setSelectValue(e.target.value)
     }
 
-    // For Search value
-    let [searchValue, setSearchValue] = useRecoilState(searchValueSetter)
+    // *  Set 'searchValue' when search box change
+    const searchOnChange = (e) => {
+        let searchCondition = {};
+        searchCondition[selectValue] = e.target.value;
 
-    // For set searchValue
-    const inputOnChange = (e) => {
-        setTimeout(() => {
-            let searchCondition = {};
-            searchCondition[selectValue] = e.target.value;
-            setSearchValue(searchCondition);
-        }, 1500)
+        setSearchValue(searchCondition);
     }
+
+    // ** Variable
+    // *  Variable for option value -> MenuItem Value
+    let titleCondition = 'd_titl'
+    let authorCondition = 'd_auth'
 
     return (
             <SearchWrap>
@@ -71,7 +74,7 @@ function SearchInput() {
                         <MenuItem value={authorCondition}>작가 검색</MenuItem>
                     </Select>
                 </StyledFormControl>
-                <StyledTextField label="검색어을 입력하세요" variant="outlined" onChange={inputOnChange}/>
+                <StyledTextField label="검색어을 입력하세요" variant="outlined" onInput={searchOnChange}/>
             </SearchWrap>
     )
 }
