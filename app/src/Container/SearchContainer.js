@@ -1,5 +1,6 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {atom, useRecoilState} from 'recoil'
+import {debounce} from 'lodash'
 // styled components
 import styled from 'styled-components'
 // Material-UI Component
@@ -46,20 +47,33 @@ function SearchInput() {
 
     // ** Local state
     let [selectValue, setSelectValue] = useState('d_titl')
+    let [inputValue, setInputValue] = useState('')
 
     // ** Set State
-    // *  Set 'selectValue' when select box change
+    // *  Set 'selectValue' and 'history' when select box change
     const selectOnChange = (e) => {
         setSelectValue(e.target.value)
     }
 
-    // *  Set 'searchValue' when search box change
-    const searchOnChange = (e) => {
-        let searchCondition = {};
-        searchCondition[selectValue] = e.target.value;
+    // *  Set 'inputValue' and 'history' when search box change
+    const inputOnChange = debounce((e) => {
+        setInputValue(e.target.value)
+    }, 1000)
 
-        setSearchValue(searchCondition);
-    }
+    // *  Set 'searchValue' when 'selectValue' and 'inputValue' change
+    useEffect(() => {
+        // - To prevent unnecessary HTTP requests during initial rendering or when the search bar is empty
+        if (inputValue === '') {
+            setSearchValue("don't request")
+        }
+        else {
+            let searchCondition = {};
+            searchCondition[selectValue] = inputValue;
+
+            setSearchValue(searchCondition);
+        }
+        
+    }, [selectValue, inputValue])
 
     // ** Variable
     // *  Variable for option value -> MenuItem Value
@@ -74,7 +88,7 @@ function SearchInput() {
                         <MenuItem value={authorCondition}>작가 검색</MenuItem>
                     </Select>
                 </StyledFormControl>
-                <StyledTextField label="검색어을 입력하세요" variant="outlined" onInput={searchOnChange}/>
+                <StyledTextField label="검색어을 입력하세요" variant="outlined" onInput={inputOnChange}/>
             </SearchWrap>
     )
 }

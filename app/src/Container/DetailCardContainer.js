@@ -4,7 +4,6 @@ import DetailView from '../view/DetailView'
 import HTTPRequest from './function/HTTPRequest'
 
 export default function Detail( { match } ) {
-  
     // For detailpage bookdata rendering
     let [detailData, setDetailData] = useState()
     useEffect(() => {

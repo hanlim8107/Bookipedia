@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import {selector, useRecoilValue} from 'recoil'
+import {selector, useRecoilState, useRecoilValue} from 'recoil'
 import {searchValueSetter} from './SearchContainer'
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -24,7 +24,7 @@ export default function Home() {
     let [start, setStart] = useState(1)
 
     // ** Set State
-    // * Set 'data' when 'searchValue' change
+    // * Set 'data' and 'history' when 'searchValue' change
     useEffect(() => {
         setStart(1)
         setData()
@@ -44,7 +44,7 @@ export default function Home() {
         }
     }, [searchValue])
 
-    // * Set 'data' when 'start' change
+    // * Set 'data' and 'history' when 'start' change
     useEffect(() => {
         if (searchValue === "don't request") {
             return null
@@ -70,7 +70,7 @@ export default function Home() {
     // * set 'start' state when the scroll reaches the set threshold
     const increaseStartCount = () => {
         setStart(start + 30)
-    }
+    }    
     
     return (
         <InfiniteScroll
