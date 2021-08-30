@@ -29,7 +29,7 @@ const StyledFormControl = styled(FormControl)`
     width: 23%;
 `
 
-export default function SearchView({selectOnChange, inputOnChange}) {
+export default function SearchView({selectOnChange, inputOnChange, inputValue}) {
     let titleCondition = 'd_titl'
     let authorCondition = 'd_auth'
 

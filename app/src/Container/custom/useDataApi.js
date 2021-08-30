@@ -47,41 +47,40 @@ const useDataApi = () => {
     })
 
     useEffect(() => {
-
         if (params.d_titl === '' || params.d_auth === '') {
             return null
         }
+        else {
+            async function HTTPRequestForSetData(params) {
+                dispatch({ type: 'FETCH_INIT' })
         
-        async function HTTPRequestForSetData(params) {
-            dispatch({ type: 'FETCH_INIT' })
-            console.log('FETCH_INIT', data)
-    
-            let HTTPData = await axios.get('/api/v1/search/book_adv.xml', {
-                params: params,
-                headers: {
-                    'X-Naver-Client-Id': 'QjlAszdDPfT3qjGeEtvD',
-                    'X-Naver-Client-Secret': 'UhuhXpfzTw'
-                }
-            })
-            .then((res) => {
-                let bookApi = convert.xml2js(res.data, {compact:true, spaces: 4})
-                let bookItems = bookApi.rss.channel.item
-    
-                if (bookItems === undefined) {
-                    dispatch({ type: 'FETCH_SUCCESS', payload: [...data.data] })
-                } 
-                else if (Array.isArray(bookItems) === false) {
-                    dispatch({ type: 'FETCH_SUCCESS', payload: [...data.data, bookItems] })
-                } 
-                else {
-                    dispatch({ type: 'FETCH_SUCCESS', payload: [...data.data, ...bookItems] })
-                }
-            })
-            .catch((res) => {
-                dispatch({ type: 'FETCH_FAILURE', payload: res.data})
-            })
+                let HTTPData = await axios.get('/api/v1/search/book_adv.xml', {
+                    params: params,
+                    headers: {
+                        'X-Naver-Client-Id': 'QjlAszdDPfT3qjGeEtvD',
+                        'X-Naver-Client-Secret': 'UhuhXpfzTw'
+                    }
+                })
+                .then((res) => {
+                    let bookApi = convert.xml2js(res.data, {compact:true, spaces: 4})
+                    let bookItems = bookApi.rss.channel.item
+        
+                    if (bookItems === undefined) {
+                        dispatch({ type: 'FETCH_SUCCESS', payload: [...data.data] })
+                    } 
+                    else if (Array.isArray(bookItems) === false) {
+                        dispatch({ type: 'FETCH_SUCCESS', payload: [...data.data, bookItems] })
+                    } 
+                    else {
+                        dispatch({ type: 'FETCH_SUCCESS', payload: [...data.data, ...bookItems] })
+                    }
+                })
+                .catch((res) => {
+                    dispatch({ type: 'FETCH_FAILURE', payload: res.data})
+                })
+            }
+            HTTPRequestForSetData(params)
         }
-        HTTPRequestForSetData(params)
 
     }, [params])
 

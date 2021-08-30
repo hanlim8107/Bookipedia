@@ -49,7 +49,6 @@ export default function DetailView({detailData}) {
             return null
         }
     }, [detailData])
-    console.log(detailData)
 
     return (
         <>

@@ -30,18 +30,14 @@ export default function Home() {
     }
 
     useEffect(() => {
-        if (searchValue === "don't request") {
-            return null
-        }
-        else {
-            dispatch({ type: 'FETCH_RESET' })
-            setParams({
-                start: 1,
-                display: 30,
-                ...searchValue
-            })
-        }
+        dispatch({ type: 'FETCH_RESET' })
+        setParams({
+            start: 1,
+            display: 30,
+            ...searchValue
+        })
     }, [searchValue])
+    
     
     return (
         <InfiniteScroll

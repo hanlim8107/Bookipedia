@@ -17,5 +17,5 @@ export default function Detail( { match } ) {
 
     return (
       <DetailView detailData={data.data}/>
-      )
+    )
 }

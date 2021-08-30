@@ -1,6 +1,7 @@
 // React Component
 import React from 'react'
 import {Route, Switch} from 'react-router-dom'
+import { KeepAlive } from 'react-keep-alive';
 // import SearchInput Conponent
 import {SearchInput} from './Container/SearchContainer'
 // import Home Component
@@ -19,11 +20,12 @@ function App() {
 
       <Switch>
         <Route exact path='/'>
-            <SearchInput/>
+          <SearchInput/>
+          <KeepAlive name='Home'>
             <Home/>
+          </KeepAlive>
         </Route>
         <Route path='/detail/:titl' component={Detail}/>
-
       </Switch>
 
     </div>
