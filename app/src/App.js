@@ -8,7 +8,7 @@ import Home from './Container/HomeCardContainer'
 // import Detail Component
 import Detail from './Container/DetailCardContainer'
 // import Nav Component
-import NavView from './view/NavView'
+import NavView from './View/NavView'
 
 function App() {
 
@@ -22,7 +22,7 @@ function App() {
             <SearchInput/>
             <Home/>
         </Route>
-        <Route path='/detail/:isbn' component={Detail}/>
+        <Route path='/detail/:titl' component={Detail}/>
 
       </Switch>
 

@@ -43,19 +43,18 @@ const TextBox = styled.div`
 export default function DetailView({detailData}) {
     let [pubDate, setPubDate] = useState([])
     useEffect(() => {
-        if (detailData !== undefined) {
-            return setPubDate(detailData.pubdate._text.match(/\d{2}/g))
+        if (detailData[0] !== undefined) {
+            return setPubDate(detailData[0].pubdate._text.match(/\d{2}/g))
         } else {
-            
+            return null
         }
     }, [detailData])
+    console.log(detailData)
 
     return (
-        <div>
-            {
-            detailData !== undefined
-
-            ?   <div>
+        <>
+            {detailData[0] !== undefined
+             && <>
                     <StyledGrid 
                         container
                         direction='row'
@@ -66,35 +65,33 @@ export default function DetailView({detailData}) {
                             component="img"
                             alt="Contemplative Reptile"
                             height="140"
-                            image={detailData.image._text}
+                            image={detailData[0].image._text}
                             title="Contemplative Reptile"
                             />
                         </Grid>
                         <Grid item xs={12} sm={3}>
                             <StyledTitle gutterBottom variant="h5" component="h2">
-                                {detailData.title._text.replace('<b>', '').replace('</b>', '').replace(/\((.*)\)/gi, '')}
+                                {detailData[0].title._text.replace('<b>', '').replace('</b>', '').replace(/\((.*)\)/gi, '')}
                             </StyledTitle>
                             <StyledAuthor gutterBottom variant="h5" component="h2">
-                                {detailData.author._text}
+                                {detailData[0].author._text}
                             </StyledAuthor>
                         </Grid>
                     </StyledGrid>
                     <TextBox>
                         <h3>상세정보</h3>
-                        <p>{detailData.description._text}</p>
+                        <p>{detailData[0].description._text}</p>
                     </TextBox>
                     <TextBox>
                         <h3>출판사</h3>
-                        <p>{detailData.publisher._text}</p>
+                        <p>{detailData[0].publisher._text}</p>
                     </TextBox>
                     <TextBox>
                         <h3>출간일</h3>
                         <p>{pubDate[0] + pubDate[1] + '년 ' + pubDate[2] + '월 ' + pubDate[3] + '일'}</p>
                     </TextBox>
-                </div>
-
-            :   null
+                </>
             }
-        </div>
+        </>
     )
 }

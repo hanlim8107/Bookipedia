@@ -1,22 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
-import DetailView from '../view/DetailView'
-import HTTPRequest from './function/HTTPRequest'
+import useDataApi from './custom/useDataApi'
+import DetailView from '../View/DetailCardView'
 
 export default function Detail( { match } ) {
-    // For detailpage bookdata rendering
-    let [detailData, setDetailData] = useState()
+    const [{data}, setParams] = useDataApi()
+    
     useEffect(() => {
-      async function HTTPRequestForSetData() {
-        let HTTPData = await HTTPRequest({
-          start: 1,
-          display: 100,
-          d_isbn: match.params.isbn
-        })
-        setDetailData(HTTPData[0])
-      }
-      HTTPRequestForSetData()
+      setParams({
+        start: 1,
+        display: 1,
+        d_titl: match.params.titl
+      })
     }, [])
-  
-    return <DetailView detailData={detailData} />
+
+
+    return (
+      <DetailView detailData={data.data}/>
+      )
 }

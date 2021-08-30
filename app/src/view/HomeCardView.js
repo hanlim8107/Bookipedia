@@ -1,4 +1,5 @@
 import StyledNoneLink from './reusable/Link'
+import LoadingSpinner from './reusable/LoadingSpinner';
 // styled components
 import styled from 'styled-components'
 // Material-UI Component
@@ -40,22 +41,26 @@ const StyledTypography = styled(Typography)`
     white-space: nowrap;
 `
 
+const LoadingSpinnerWrap = styled.div`
+    width: 40px;
+    margin: 190px auto;
+`
 
-export default function HomeView( { data } ) {
+
+export default function HomeView( { data, isLoading, isError } ) {
     
     return (
-        <CardWrap
-            container 
-            spacing={2}
-            direction='row'
-        >
-            {
-            data !== undefined
-
-            ?   data.map((data, index) => {
+        <>
+            <CardWrap
+                container 
+                spacing={2}
+                direction='row'
+            >
+                {
+                data.map((data, index) => {
                     return (
                         <Grid item xs={12} sm={6} lg={3} key={index}>
-                            <StyledNoneLink className="nav-link" to={`/detail/${data.isbn._text}`}>
+                            <StyledNoneLink className="nav-link" to={`/detail/${data.title._text.replace('<b>', '').replace('</b>', '')}`}>
                                 <StyledCard>
                                     <CardActionArea>
                                         <CardImage
@@ -71,10 +76,15 @@ export default function HomeView( { data } ) {
                             </StyledNoneLink>
                         </Grid>
                     )
-            })
-            
-            :   <NoResult>검색결과가 없습니다</NoResult>
+                })
+                }
+            </CardWrap>
+            {data[0] === undefined && !isLoading && <NoResult>검색 결과가 없습니다</NoResult>}
+            {isLoading 
+             && <LoadingSpinnerWrap>
+                    <LoadingSpinner/>
+                </LoadingSpinnerWrap>  
             }
-        </CardWrap>
+        </>
     )
 }

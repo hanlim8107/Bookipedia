@@ -1,85 +1,56 @@
-import { useState, useEffect } from 'react'
-import {selector, useRecoilState, useRecoilValue} from 'recoil'
-import {searchValueSetter} from './SearchContainer'
+import { useEffect } from "react";
+import { selector, useRecoilValue } from "recoil";
+
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import HomeView from '../view/HomeView.js'
-import HTTPRequest from './function/HTTPRequest.js'
+import { searchValueSetter } from './SearchContainer'
+import useDataApi from './custom/useDataApi'
+import HomeView from '../View/HomeCardView.js'
 
 
-// Get global state 'searchValue' declared in 'SearchContainer.js'
 const searchValueGetter = selector({
-    key: 'searchValueGetter',
+    key: "searchValueGetter",
     get: ({get}) => {
         return get(searchValueSetter)
     }
 })
 
+
 export default function Home() {
-    // ** Global state
     const searchValue = useRecoilValue(searchValueGetter)
+    const [{data, params}, setParams, dispatch] = useDataApi()
 
-    // ** Local state
-    let [data, setData] = useState()
-    let [start, setStart] = useState(1)
 
-    // ** Set State
-    // * Set 'data' and 'history' when 'searchValue' change
+    const increaseStartCount = () => {
+        setParams({
+            start: params.start + 30,
+            display: 30,
+            ...searchValue
+        })
+    }
+
     useEffect(() => {
-        setStart(1)
-        setData()
         if (searchValue === "don't request") {
             return null
-        } 
+        }
         else {
-            async function HTTPRequestForSetData() {
-                let HTTPData = await HTTPRequest({
-                    start: start,
-                    display: 30,
-                    ...searchValue
-                })
-                setData(HTTPData)
-            }
-            HTTPRequestForSetData()
+            dispatch({ type: 'FETCH_RESET' })
+            setParams({
+                start: 1,
+                display: 30,
+                ...searchValue
+            })
         }
     }, [searchValue])
-
-    // * Set 'data' and 'history' when 'start' change
-    useEffect(() => {
-        if (searchValue === "don't request") {
-            return null
-        } 
-        else if (start === 1) {
-            return null
-        }
-        else {
-            async function HTTPRequestForSetData() {
-                let HTTPData = await HTTPRequest({
-                    start: start,
-                    display: 30,
-                    ...searchValue
-                })
-                if (HTTPData !== undefined) {
-                    setData([...data, ...HTTPData])
-                }
-            }
-            HTTPRequestForSetData()
-        }
-    }, [start])
-
-    // * set 'start' state when the scroll reaches the set threshold
-    const increaseStartCount = () => {
-        setStart(start + 30)
-    }    
     
     return (
         <InfiniteScroll
-            dataLength={data !== undefined ? data.length : null}
+            dataLength={data.data !== undefined ? data.data.length : null}
             next={increaseStartCount}
             hasMore={true}
             style={{overflow: 'visible'}}
         >
-            <HomeView data={data}/>
+            <HomeView data={data.data} isLoading={data.isLoading} isError={data.isError}/>
         </InfiniteScroll>
     )
 }
