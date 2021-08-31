@@ -61,7 +61,7 @@ export default function HomeView( { data, isLoading, isError } ) {
                     return (
                         <Grid item xs={12} sm={6} lg={3} key={index}>
                             {}
-                            <StyledNoneLink className="nav-link" to={`/detail/${data.title._text.replace('<b>', '').replace('</b>', '')}`}>
+                            <StyledNoneLink className="nav-link" to={`/detail/${data.isbn._text}`}>
                                 <StyledCard>
                                     <CardActionArea>
                                         <CardImage

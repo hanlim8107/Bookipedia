@@ -10,7 +10,7 @@ export default function Detail( { match } ) {
       setParams({
         start: 1,
         display: 1,
-        d_titl: match.params.titl
+        d_isbn: match.params.isbn
       })
     }, [])
 

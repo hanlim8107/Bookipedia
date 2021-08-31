@@ -25,7 +25,7 @@ function App() {
             <Home/>
           </KeepAlive>
         </Route>
-        <Route path='/detail/:titl' component={Detail}/>
+        <Route path='/detail/:isbn' component={Detail}/>
       </Switch>
 
     </div>
