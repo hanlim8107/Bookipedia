@@ -21,14 +21,6 @@ export default function Home() {
     const [{data, params}, setParams, dispatch] = useDataApi()
 
 
-    const increaseStartCount = () => {
-        setParams({
-            start: params.start + 30,
-            display: 30,
-            ...searchValue
-        })
-    }
-
     useEffect(() => {
         dispatch({ type: 'FETCH_RESET' })
         setParams({
@@ -36,7 +28,21 @@ export default function Home() {
             display: 30,
             ...searchValue
         })
+        return 
     }, [searchValue])
+
+    const increaseStartCount = () => {
+        if (data.isStart === false) {
+            return null
+        }
+        else {
+            setParams({
+                start: params.start + 30,
+                display: 30,
+                ...searchValue
+            })
+        } 
+    }
     
     
     return (

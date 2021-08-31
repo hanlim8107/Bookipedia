@@ -9,6 +9,7 @@ const dataFetchReducer = (state, action) => {
             return {
                 isLoading: false,
                 isError: false,
+                isStart: false,
                 data: [],
             }
         case 'FETCH_INIT':
